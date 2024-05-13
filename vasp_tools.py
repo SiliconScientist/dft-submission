@@ -1,5 +1,6 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+import os
+import copy
+
 """
 Functions for setting up inputs for VASP (and eventually other DFT codes.)
 """
@@ -31,7 +32,7 @@ def make_job_script(
     job_allocation=None,
     continuation=False,
 ):
-    # TODO:Add an input that's just a string that gets added (probably add it below keywoard block and above job run block)
+    # TODO:Add an input that's just a string that gets added (probably add it below keyword block and above job run block)
     # clear the file:
     with open(job_script_name, "w+") as file:
         file.write("")
@@ -166,7 +167,7 @@ cd $PBS_O_WORKDIR        # go to where your PBS job is submitted if necessary
                 file.write("continuation.sh")
 
 
-def makeAllVASPInput(
+def make_vasp_input(
     input_atoms,
     calculation_directory,
     meta_parameters,
@@ -175,12 +176,6 @@ def makeAllVASPInput(
     job_parameters,
     dimer_parameters,
 ):
-    import os
-    from pymatgen.io.vasp import Incar
-
-    #    from ase.io import write
-    import copy
-
     try:
         os.chdir(calculation_directory)
     except FileNotFoundError:
@@ -206,8 +201,8 @@ def makeAllVASPInput(
     type_of_run = meta_parameters["type_of_run"]
     # For DOS run, need two version of some files to run charge calc and then DOS calc
     if type_of_run.lower() == "dos":
-        kpoint_parametersDOS = copy.deepcopy(kpoint_parameters)
-        paramsOverwrite = {
+        kpoint_parameters_dos = copy.deepcopy(kpoint_parameters)
+        parameters_overwrite = {
             "NEDOS": 5000,
             "NPAR": 1,
             "LORBIT": 10,
@@ -217,39 +212,41 @@ def makeAllVASPInput(
             "EDIFF": 10**-8,
             "ICHARG": 11,
         }  # TODO: Make this so it depends on the parameter_set. Will probably require some refactoring.
-        kpoint_parametersDOS["factor"] = [2.75, 2.75, 1]
-        kpoint_parametersDOS["kpoints_name"] = "KPOINTS_DOS"
-        make_kpoints(**kpoint_parametersDOS)
+        kpoint_parameters_dos["factor"] = [2.75, 2.75, 1]
+        kpoint_parameters_dos["kpoints_name"] = "KPOINTS_DOS"
+        make_kpoints(**kpoint_parameters_dos)
         meta_parametersDOS = copy.deepcopy(meta_parameters)
-        meta_parametersDOS["overwrite_parameters"].update(paramsOverwrite)
+        meta_parametersDOS["overwrite_parameters"].update(parameters_overwrite)
         meta_parametersDOS["incar_name"] = "INCAR_DOS"
         make_incar(**meta_parametersDOS)
     elif type_of_run.lower() == "dimer":
-        makeMODECAR(dimer_parameters["bondBreak"], input_atoms)
+        makeMODECAR(dimer_parameters["bond_break"], input_atoms)
     if meta_parameters[
         "magnetic_continuation"
     ]:  # Could apply to multiple types of runs (relaxation, dimer, MD)
         os.rename("INCAR", "INCAR_mag")
-        paramsOverwrite = {"ISPIN": 1, "NSW": 0, "ICHARG": 2}
-        meta_parametersMagCont = copy.deepcopy(meta_parameters)
-        meta_parametersMagCont["overwrite_parameters"].update(paramsOverwrite)
-        make_incar(**meta_parametersMagCont)
+        parameters_overwrite = {"ISPIN": 1, "NSW": 0, "ICHARG": 2}
+        meta_parameters_magnetic_continuation = copy.deepcopy(meta_parameters)
+        meta_parameters_magnetic_continuation["overwrite_parameters"].update(
+            parameters_overwrite
+        )
+        make_incar(**meta_parameters_magnetic_continuation)
 
 
-def makeMODECAR(bondBreak, input_atoms, fileName="MODECAR"):
+def makeMODECAR(bond_break, input_atoms, file_name="MODECAR"):
     import numpy as np
 
     modecar = np.zeros((len(input_atoms), 3))
-    modecar[bondBreak[0]] = (
-        input_atoms.get_positions()[bondBreak[0]]
-        - input_atoms.get_positions()[bondBreak[1]]
+    modecar[bond_break[0]] = (
+        input_atoms.get_positions()[bond_break[0]]
+        - input_atoms.get_positions()[bond_break[1]]
     )
-    modecar[bondBreak[1]] = -(
-        input_atoms.get_positions()[bondBreak[0]]
-        - input_atoms.get_positions()[bondBreak[1]]
+    modecar[bond_break[1]] = -(
+        input_atoms.get_positions()[bond_break[0]]
+        - input_atoms.get_positions()[bond_break[1]]
     )
     modecar = modecar / np.linalg.norm(modecar)
-    np.savetxt(fileName, modecar)
+    np.savetxt(file_name, modecar)
 
 
 def makePOTCAR(input_atoms, potcar_parameters, geometry_guess_quality="Good"):

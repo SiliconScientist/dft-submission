@@ -1,18 +1,19 @@
+import sys
 import toml
 from config import Config
-from vasp_tools import makeAllVASPInput, print_input_summary, print_output_summary
+from vasp_tools import make_vasp_input, print_input_summary, print_output_summary
 from server_interface import upsync, downsync
 import ase
 from ase.io import read
 from ase.visualize import view
-from pathlib import Path
 import os
-
 import time
 
 
 def main():
-    config = Config(**toml.load("config.toml"))
+    push_pull = sys.argv[1]
+    configuration_filepath = sys.argv[2]
+    config = Config(**toml.load(configuration_filepath))
     structure_names = os.listdir(config.paths.structures)
     calculation_directory_list = [
         config.paths.local_personal_directory
@@ -32,7 +33,7 @@ def main():
         + config.paths.project_name
         + config.paths.sub_project_name
     )
-    if config.submit == True:
+    if push_pull == "push":
         input_atoms_list = [
             read(
                 filename=config.paths.structures + "/" + structure_name,
@@ -44,7 +45,7 @@ def main():
         for input_atoms, calculation_directory in zip(
             input_atoms_list, calculation_directory_list
         ):
-            makeAllVASPInput(
+            make_vasp_input(
                 input_atoms,
                 calculation_directory,
                 config.meta_parameters.dict(),
@@ -54,7 +55,6 @@ def main():
                 config.dimer_parameters,
             )
             print_input_summary(calculation_directory)
-
         time.sleep(3)  # Maybe not necessary
         upsync(
             calculation_directory_list,
@@ -62,9 +62,13 @@ def main():
             remote_project_directory,
             options="rv",
         )
-    else:
+        print("If you wish to submit all your jobs quickly, on Cypress, please run:")
+        print(
+            f'for directory in {remote_project_directory}*/ ; do (cd "$directory" && sub); done'
+        )
+    elif push_pull == "pull":
         remote_project_directory_list = [
-            remote_project_directory / structure_name
+            remote_project_directory + structure_name
             for structure_name in structure_names
         ]
         downsync(
@@ -73,7 +77,6 @@ def main():
             local_project_directory,
             options="rv",
         )
-
         for structure_name in structure_names:
             os.chdir(os.path.join(local_project_directory, structure_name))
 
