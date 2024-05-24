@@ -14,7 +14,7 @@
     `alias dft='python /Users/averyhill/Documents/Bitbucket/dft_submission/__main__.py'`
 
 * Create a DFT folder setup according to our group's project scheme:
-    ![alt text](<../../../../../var/folders/yf/g4qx_p5929jcvzyg7pwr1rww0000gn/T/TemporaryItems/NSIRD_screencaptureui_jpytDI/Screenshot 2024-05-24 at 10.14.11 AM.png>)
+    ![Scheme](images/scheme.png)
 * Fill your sub-project's structure folder with structures (format="vasp")
 * Create a config.toml file based on this repository's example_config.toml file.
 * Upload your jobs to a remote server via the command:
