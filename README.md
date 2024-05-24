@@ -2,7 +2,7 @@
 
 ### What is this repository for? ###
 
-* A script responsible for the creation of vasp jobs, and the uploading and downloading of jobs from a remote server (e.g. Tulane's Cypress)
+* A script responsible for the creation of vasp jobs, and the uploading and downloading of jobs to and from a remote server (e.g. Tulane's Cypress)
 
 ### How do I get set up? ###
 
