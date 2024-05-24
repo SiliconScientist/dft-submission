@@ -1,0 +1,54 @@
+[paths]
+local_personal_directory = "/path/to/DFT/Calculations/"
+project_name = "project1/"
+sub_project_name = "path/to/sub-project1/"
+structure_folder = "/path/to/sub-project1/structures/"
+remote_host_name = "insert_username@cypress1.tulane.edu"
+remote_personal_directory = "/lustre/project/mmontemore/insert_username"
+
+
+[meta_parameters]
+system_name = "pt_h2o"
+type_of_run = "relaxation"
+parameter_set = "PBE_1"
+num_geometry_steps = 300
+geometry_guess_quality = "VeryGood"
+spin_polarized = false
+continuation = false
+
+[meta_parameters.overwrite_parameters]
+GGA = "RP"
+IVDW = 11
+IBRION = 2
+ISMEAR = 0
+SIGMA = 0.1
+ENCUT = 400
+EDIFF = 1E-6
+EDIFFG = -0.05
+
+[potcar_parameters]
+setups = "recommended"
+xc = "PBE"
+pseudo_potential = "potpaw_PBE"
+
+[kpoint_parameters]
+explicit_kpoints = [4, 3, 1]
+# "gamma":True,
+# "kPointDensity" : 68,
+# "vacuumDirections" : [False, False, True],
+# "cell":inputAtomsList[0].cell
+
+[dimer_parameters]
+
+[job_parameters]
+computer_name = "Cypress"
+job_minutes = 1440                                         # 24 hr * 60 min/hr = 1440 min
+num_job_nodes = 1
+executable = "/lustre/project/mmontemore/vaspbin/vasp_std"
+type_of_run = "relaxation"
+system_name = "pt_h2o"
+job_memory = 64000
+job_cores = 4
+job_partition = ""
+job_qos = "normal"
+job_mail_address = "insert_username@tulane.edu"
