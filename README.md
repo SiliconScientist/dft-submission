@@ -29,6 +29,7 @@
 * This script currently relies on a directory of structures as input, but what if we only need one structure, but multiple parameter sets (i.e. a bunch of config.toml files). One idea is to have a "configurations" folder in the sub-project directory.
 * Package this repository: https://packaging.python.org/en/latest/tutorials/packaging-projects/
 * This script only take structures with format="vasp", but we could make a variable in the configuration files called "structure_format" that could include other formats ("xyz", "cif, "gro", etc.).
+* Redundant use of the "system_name" variable in the configuration files.
 
 
 
