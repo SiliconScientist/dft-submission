@@ -6,7 +6,7 @@ class Paths(BaseModel):
     local_personal_directory: str
     project_name: str
     sub_project_name: str
-    structures: str
+    structure_folder: str
     remote_host_name: str
     remote_personal_directory: str
 
@@ -47,7 +47,6 @@ class JobParameters(BaseModel):
 
 
 class Config(BaseModel):
-    submit: bool
     paths: Paths
     meta_parameters: MetaParameters
     potcar_parameters: POTCARParameters
