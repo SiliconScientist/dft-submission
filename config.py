@@ -29,7 +29,10 @@ class POTCARParameters(BaseModel):
 
 
 class KPOINTParameters(BaseModel):
-    explicit_kpoints: list[int]
+    explicit_kpoints: list[int]  # Set to [] if using kpoint_density
+    gamma: bool
+    kpoint_density: int  # Set to 0 if using explicit_kpoints
+    vacuum_directions: list[bool]
 
 
 class JobParameters(BaseModel):

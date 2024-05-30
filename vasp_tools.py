@@ -193,7 +193,11 @@ def make_vasp_input(
         os.chdir("..")
     else:
         input_atoms.write("POSCAR")
-    make_kpoints(geometry_guess_quality=geometry_guess_quality, **kpoint_parameters)
+    make_kpoints(
+        geometry_guess_quality=geometry_guess_quality,
+        **kpoint_parameters,
+        cell=input_atoms.cell
+    )
     makePOTCAR(
         input_atoms, potcar_parameters, geometry_guess_quality=geometry_guess_quality
     )
@@ -294,9 +298,9 @@ def makePOTCAR(input_atoms, potcar_parameters, geometry_guess_quality="Good"):
 
 
 def make_kpoints(
-    explicit_kpoints=None,
+    explicit_kpoints=[],
     gamma=True,
-    kpoint_density=None,
+    kpoint_density=0,
     vacuum_directions=None,
     cell=None,
     kpoints_name="KPOINTS",
@@ -324,9 +328,9 @@ def make_kpoints(
             os.remove(kpoints_name)
         except OSError:
             pass
-    if explicit_kpoints is not None:
+    if explicit_kpoints != []:
         explicit_kpoints = explicit_kpoints
-    elif kpoint_density is not None:
+    elif kpoint_density != 0:
         explicit_kpoints = [1, 1, 1]
         for i in range(3):
             if vacuum_directions[i] == True:
