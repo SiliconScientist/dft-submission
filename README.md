@@ -7,7 +7,7 @@
 ### How do I get set up? ###
 
 * Clone repository:
-    `git clone https://Silicon_Scientist@bitbucket.org/mmmontemore/montemoregroupdocumentation.git`
+    `git clone https://Silicon_Scientist@bitbucket.org/silicon_scientist/dft_submission.git`
 * Install dependencies on your computer:
     `pip install -r requirements.txt`
 * Configure "dft" alias in your .zshrc file:

@@ -113,6 +113,7 @@ def main():
         for configuration in os.listdir(configuration_filepath):
             config = Config(**toml.load(configuration_filepath + "/" + configuration))
             configuration_name = Path(configuration).stem
+            structure_names = os.listdir(config.paths.structure_folder)
             calculation_directory_list = [
                 config.paths.local_personal_directory
                 + config.paths.project_name
