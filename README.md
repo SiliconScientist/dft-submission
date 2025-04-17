@@ -7,11 +7,11 @@
 ### How do I get set up? ###
 
 * Clone repository:
-    `git clone https://Silicon_Scientist@bitbucket.org/silicon_scientist/dft_submission.git`
+    `git clone https://github.com/SiliconScientist/dft-sync.git`
 * Install dependencies on your computer:
     `pip install -r requirements.txt`
 * Configure "dft" alias in your .zshrc file:
-    `alias dft='python /Users/averyhill/Documents/Bitbucket/dft_submission/__main__.py'`
+    `alias dft='python /path/to/Github/dft_submission/__main__.py'`
 
 * Create a DFT folder setup according to our group's project scheme:
     ![Scheme](images/scheme.png)
